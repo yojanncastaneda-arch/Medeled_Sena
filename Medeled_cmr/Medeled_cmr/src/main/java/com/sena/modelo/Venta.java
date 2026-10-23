@@ -70,6 +70,11 @@ public class Venta {
         this.fechaVenta = fechaVenta;
     }
 
+    // Total de la venta (cantidad x precio unitario); no se guarda, se calcula
+    public BigDecimal getTotal() {
+        return precioUnitario.multiply(BigDecimal.valueOf(cantidad));
+    }
+
     public String getEstado() {
         return estado;
     }

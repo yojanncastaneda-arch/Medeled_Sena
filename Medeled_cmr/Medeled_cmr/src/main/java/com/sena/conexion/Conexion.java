@@ -26,6 +26,16 @@ public class Conexion {
         return con;
     }
 
+    // Igual que conectar(), pero si falla lanza la excepción en lugar de devolver null.
+    // La usan los DAO del API para poder responder un error al cliente.
+    public static Connection obtener() throws SQLException {
+        Connection con = conectar();
+        if (con == null) {
+            throw new SQLException("No fue posible conectar con la base de datos");
+        }
+        return con;
+    }
+
     public static void main(String[] args) {
         conectar();
     }

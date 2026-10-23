@@ -51,12 +51,7 @@ public class UsuarioDAO {
         return buscarPorUsuario(nombreUsuario) != null;
     }
 
-    // Conexion.conectar() devuelve null cuando falla, así que se convierte en excepción
     private Connection obtenerConexion() throws SQLException {
-        Connection con = Conexion.conectar();
-        if (con == null) {
-            throw new SQLException("No fue posible conectar con la base de datos");
-        }
-        return con;
+        return Conexion.obtener();
     }
 }
