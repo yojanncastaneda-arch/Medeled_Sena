@@ -26,6 +26,12 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>8.3.0</version>
         </dependency>
+        <!-- Lee las claves de la base de datos desde el archivo .env -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.0.2</version>
+        </dependency>
         <!-- Servidor web y controladores REST (JSON) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
