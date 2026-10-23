@@ -1,0 +1,918 @@
+{
+  "info": {
+    "name": "Medeled - API del Proyecto: Clientes y Ventas (AA5-EV04)",
+    "description": "Pruebas de la API REST del proyecto Medeled (clientes y ventas).\n\nRequisitos: servidor encendido (mvn spring-boot:run) y base de datos creada con base.sql.\nEjecute la colección completa EN ORDEN con \"Run collection\": las pruebas crean un cliente y una venta, los consultan, actualizan y al final los eliminan, dejando la base como estaba.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "idCliente",
+      "value": ""
+    },
+    {
+      "key": "idVenta",
+      "value": ""
+    },
+    {
+      "key": "hoy",
+      "value": ""
+    },
+    {
+      "key": "manana",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "1. Crear cliente",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const hoy = new Date();",
+                  "const f = (d) => d.getFullYear() + \"-\" + String(d.getMonth() + 1).padStart(2, \"0\") + \"-\" + String(d.getDate()).padStart(2, \"0\");",
+                  "pm.collectionVariables.set(\"hoy\", f(hoy));",
+                  "pm.collectionVariables.set(\"manana\", f(new Date(hoy.getTime() + 86400000)));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Responde en menos de 2 segundos\", () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "const c = pm.response.json();",
+                  "pm.test(\"Devuelve el id generado\", () => pm.expect(c.idCliente).to.be.a(\"number\").and.above(0));",
+                  "pm.test(\"Encabezado Location apunta al cliente\", () => pm.expect(pm.response.headers.get(\"Location\")).to.eql(\"/api/clientes/\" + c.idCliente));",
+                  "pm.test(\"estado = pendiente\", () => pm.expect(pm.response.json().estado).to.eql(\"pendiente\"));",
+                  "pm.collectionVariables.set(\"idCliente\", c.idCliente);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Crea un cliente y guarda su id en la variable {{idCliente}} para las siguientes pruebas.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente Prueba Postman\",\n  \"producto\": \"Panel solar 450W\",\n  \"fechaCompra\": \"{{hoy}}\",\n  \"estado\": \"pendiente\",\n  \"observaciones\": \"Reclamo por bajo rendimiento\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "2. Crear cliente con datos inválidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"mensaje = Datos inválidos\", () => pm.expect(pm.response.json().mensaje).to.eql(\"Datos inválidos\"));",
+                  "pm.test(\"Incluye el error: El nombre es obligatorio\", () => pm.expect(pm.response.json().errores).to.include(\"El nombre es obligatorio\"));",
+                  "pm.test(\"Incluye el error: La fecha de compra no puede ser futura\", () => pm.expect(pm.response.json().errores).to.include(\"La fecha de compra no puede ser futura\"));",
+                  "pm.test(\"Incluye el error: El estado debe ser: pendiente, en_proceso o resuelto\", () => pm.expect(pm.response.json().errores).to.include(\"El estado debe ser: pendiente, en_proceso o resuelto\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Validaciones: nombre obligatorio, fecha no futura y estado permitido.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"\",\n  \"producto\": \"Panel\",\n  \"fechaCompra\": \"{{manana}}\",\n  \"estado\": \"cerrado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "3. Crear cliente con fecha mal escrita",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Indica el campo con formato inválido\", () => pm.expect(pm.response.json().mensaje).to.include(\"fechaCompra\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Validación: la fecha debe venir en formato yyyy-MM-dd.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente Prueba Postman\",\n  \"producto\": \"Panel solar 450W\",\n  \"fechaCompra\": \"22/10/2026\",\n  \"estado\": \"pendiente\",\n  \"observaciones\": \"Reclamo por bajo rendimiento\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "4. Listar clientes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Responde en menos de 2 segundos\", () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "pm.test(\"Devuelve una lista\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"Incluye el cliente creado\", () => pm.expect(pm.response.json().map(c => c.idCliente)).to.include(pm.collectionVariables.get(\"idCliente\")));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Lista todos los clientes."
+          }
+        },
+        {
+          "name": "5. Listar clientes por estado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Todos están pendientes\", () => pm.response.json().forEach(c => pm.expect(c.estado).to.eql(\"pendiente\")));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes?estado=pendiente",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "pendiente"
+                }
+              ]
+            },
+            "description": "Filtro opcional por estado."
+          }
+        },
+        {
+          "name": "6. Listar con estado inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"mensaje = El estado debe ser: pendiente, en_proceso o resuelto\", () => pm.expect(pm.response.json().mensaje).to.eql(\"El estado debe ser: pendiente, en_proceso o resuelto\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes?estado=cerrado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "cerrado"
+                }
+              ]
+            },
+            "description": "Validación del filtro de estado."
+          }
+        },
+        {
+          "name": "7. Consultar cliente por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"nombre = Cliente Prueba Postman\", () => pm.expect(pm.response.json().nombre).to.eql(\"Cliente Prueba Postman\"));",
+                  "pm.test(\"producto = Panel solar 450W\", () => pm.expect(pm.response.json().producto).to.eql(\"Panel solar 450W\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idCliente}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idCliente}}"
+              ]
+            },
+            "description": "Consulta el cliente creado."
+          }
+        },
+        {
+          "name": "8. Consultar cliente inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"mensaje = No existe cliente con id 999999\", () => pm.expect(pm.response.json().mensaje).to.eql(\"No existe cliente con id 999999\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "999999"
+              ]
+            },
+            "description": "Un id que no existe responde 404."
+          }
+        },
+        {
+          "name": "9. Consultar con id no numérico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"mensaje = El parámetro 'id' debe ser numérico\", () => pm.expect(pm.response.json().mensaje).to.eql(\"El parámetro 'id' debe ser numérico\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "abc"
+              ]
+            },
+            "description": "Validación del parámetro de la URL."
+          }
+        },
+        {
+          "name": "10. Actualizar cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"estado = en_proceso\", () => pm.expect(pm.response.json().estado).to.eql(\"en_proceso\"));",
+                  "pm.test(\"observaciones = Técnico asignado\", () => pm.expect(pm.response.json().observaciones).to.eql(\"Técnico asignado\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idCliente}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idCliente}}"
+              ]
+            },
+            "description": "Cambia el estado del reclamo a en_proceso.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente Prueba Postman\",\n  \"producto\": \"Panel solar 450W\",\n  \"fechaCompra\": \"{{hoy}}\",\n  \"estado\": \"en_proceso\",\n  \"observaciones\": \"Técnico asignado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "11. Actualizar cliente inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "999999"
+              ]
+            },
+            "description": "Actualizar un id que no existe responde 404.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente Prueba Postman\",\n  \"producto\": \"Panel solar 450W\",\n  \"fechaCompra\": \"{{hoy}}\",\n  \"estado\": \"pendiente\",\n  \"observaciones\": \"Reclamo por bajo rendimiento\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ventas",
+      "item": [
+        {
+          "name": "12. Registrar venta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Responde en menos de 2 segundos\", () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+                  "const v = pm.response.json();",
+                  "pm.test(\"Devuelve el id generado\", () => pm.expect(v.idVenta).to.be.a(\"number\").and.above(0));",
+                  "pm.test(\"Calcula el total (2 x 1250000.50)\", () => pm.expect(v.total).to.eql(2500001));",
+                  "pm.collectionVariables.set(\"idVenta\", v.idVenta);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ]
+            },
+            "description": "Registra una venta para el cliente creado y guarda su id en {{idVenta}}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": {{idCliente}},\n  \"producto\": \"Inversor 3kW\",\n  \"cantidad\": 2,\n  \"precioUnitario\": 1250000.5,\n  \"fechaVenta\": \"{{hoy}}\",\n  \"estado\": \"pendiente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "13. Registrar venta para cliente inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"mensaje = El cliente con id 999999 no existe\", () => pm.expect(pm.response.json().mensaje).to.eql(\"El cliente con id 999999 no existe\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ]
+            },
+            "description": "Regla de negocio: la venta debe pertenecer a un cliente existente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 999999,\n  \"producto\": \"Inversor 3kW\",\n  \"cantidad\": 2,\n  \"precioUnitario\": 1250000.5,\n  \"fechaVenta\": \"{{hoy}}\",\n  \"estado\": \"pendiente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "14. Registrar venta con valores inválidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Incluye el error: La cantidad debe ser al menos 1\", () => pm.expect(pm.response.json().errores).to.include(\"La cantidad debe ser al menos 1\"));",
+                  "pm.test(\"Incluye el error: El precio unitario debe ser mayor que 0\", () => pm.expect(pm.response.json().errores).to.include(\"El precio unitario debe ser mayor que 0\"));",
+                  "pm.test(\"Incluye el error: El estado debe ser: pendiente, pagada o anulada\", () => pm.expect(pm.response.json().errores).to.include(\"El estado debe ser: pendiente, pagada o anulada\"));",
+                  "pm.test(\"Reporta 5 errores\", () => pm.expect(pm.response.json().errores.length).to.eql(5));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ]
+            },
+            "description": "Validaciones: idCliente positivo, producto obligatorio, cantidad, precio y estado.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": -1,\n  \"producto\": \"\",\n  \"cantidad\": 0,\n  \"precioUnitario\": 0,\n  \"fechaVenta\": \"{{hoy}}\",\n  \"estado\": \"regalada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "15. Listar ventas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Incluye la venta creada\", () => pm.expect(pm.response.json().map(v => v.idVenta)).to.include(pm.collectionVariables.get(\"idVenta\")));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas"
+              ]
+            },
+            "description": "Lista todas las ventas."
+          }
+        },
+        {
+          "name": "16. Consultar venta por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"producto = Inversor 3kW\", () => pm.expect(pm.response.json().producto).to.eql(\"Inversor 3kW\"));",
+                  "pm.test(\"cantidad = 2\", () => pm.expect(pm.response.json().cantidad).to.eql(2));",
+                  "pm.test(\"Pertenece al cliente creado\", () => pm.expect(pm.response.json().idCliente).to.eql(pm.collectionVariables.get(\"idCliente\")));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas/{{idVenta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas",
+                "{{idVenta}}"
+              ]
+            },
+            "description": "Consulta la venta creada."
+          }
+        },
+        {
+          "name": "17. Ventas de un cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"El cliente tiene 1 venta\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idCliente}}/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idCliente}}",
+                "ventas"
+              ]
+            },
+            "description": "Lista las ventas del cliente creado."
+          }
+        },
+        {
+          "name": "18. Actualizar venta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"estado = pagada\", () => pm.expect(pm.response.json().estado).to.eql(\"pagada\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas/{{idVenta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas",
+                "{{idVenta}}"
+              ]
+            },
+            "description": "Marca la venta como pagada.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": {{idCliente}},\n  \"producto\": \"Inversor 3kW\",\n  \"cantidad\": 2,\n  \"precioUnitario\": 1250000.5,\n  \"fechaVenta\": \"{{hoy}}\",\n  \"estado\": \"pagada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "19. Eliminar cliente con ventas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Explica que tiene ventas\", () => pm.expect(pm.response.json().mensaje).to.include(\"tiene ventas registradas\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idCliente}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idCliente}}"
+              ]
+            },
+            "description": "Regla de negocio: no se elimina un cliente con ventas, para conservar el historial."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Limpieza",
+      "item": [
+        {
+          "name": "20. Eliminar venta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Confirma la eliminación\", () => pm.expect(pm.response.json().exito).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas/{{idVenta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas",
+                "{{idVenta}}"
+              ]
+            },
+            "description": "Elimina la venta creada en la prueba 12."
+          }
+        },
+        {
+          "name": "21. Eliminar venta ya eliminada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ventas/{{idVenta}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ventas",
+                "{{idVenta}}"
+              ]
+            },
+            "description": "La venta ya no existe: 404."
+          }
+        },
+        {
+          "name": "22. Eliminar cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Confirma la eliminación\", () => pm.expect(pm.response.json().exito).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idCliente}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idCliente}}"
+              ]
+            },
+            "description": "Ya sin ventas, el cliente sí se puede eliminar."
+          }
+        },
+        {
+          "name": "23. Consultar cliente eliminado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{idCliente}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{idCliente}}"
+              ]
+            },
+            "description": "Comprueba que el cliente ya no existe."
+          }
+        }
+      ]
+    }
+  ]
+}
