@@ -21,4 +21,13 @@ CREATE TABLE IF NOT EXISTS venta (
     FOREIGN KEY (idcliente) REFERENCES cliente(idcliente)
 );
 
+-- Usuarios del sistema para el servicio de registro e inicio de sesión.
+-- La contraseña nunca se guarda en texto plano, solo su hash BCrypt.
+CREATE TABLE IF NOT EXISTS usuario (
+    idusuario INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(30) NOT NULL UNIQUE,
+    contrasena_hash VARCHAR(100) NOT NULL,
+    fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 SELECT * FROM medeled_cmr.cliente;
