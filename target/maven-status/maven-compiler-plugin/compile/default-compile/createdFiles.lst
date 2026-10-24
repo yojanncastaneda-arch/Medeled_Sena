@@ -1,0 +1,6 @@
+com\sena\modelo\Venta.class
+com\sena\conexion\Conexion.class
+com\sena\modelo\Cliente.class
+com\sena\dao\ClienteDAO.class
+com\sena\dao\VentaDAO.class
+com\sena\servlet\ClienteServlet.class
