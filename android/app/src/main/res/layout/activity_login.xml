@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#E1F5EE"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="medEled"
+        android:textColor="#14463A"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="40dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ILUMINACIÓN ECOLÓGICA"
+        android:textColor="#5B6F69"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:layout_marginBottom="35dp"/>
+
+
+    <!-- TARJETA LOGIN -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bienvenido de nuevo"
+            android:textColor="#14463A"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accede a tu panel de gestión MEDELED"
+            android:textColor="#5B6F69"
+            android:textSize="13sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="22dp"/>
+
+
+        <!-- CORREO -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Correo electrónico *"
+            android:textColor="#14463A"
+            android:textStyle="bold"
+            android:textSize="13sp"/>
+
+        <EditText
+            android:id="@+id/txtCorreo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="usuario@empresa.com"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:backgroundTint="#0F6E56"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp"/>
+
+
+        <!-- CONTRASEÑA -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contraseña *"
+            android:textColor="#14463A"
+            android:textStyle="bold"
+            android:textSize="13sp"/>
+
+        <EditText
+            android:id="@+id/txtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="••••••••"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:backgroundTint="#0F6E56"
+            android:layout_marginTop="6dp"/>
+
+
+        <!-- RECORDAR / RECUPERAR -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="20dp">
+
+            <CheckBox
+                android:id="@+id/checkRecordarme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recordarme"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/btnOlvidePassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="¿Olvidaste tu contraseña?"
+                android:textColor="#00A5BA"
+                android:textSize="12sp"
+                android:gravity="right"/>
+
+        </LinearLayout>
+
+
+        <!-- BOTÓN -->
+
+        <Button
+            android:id="@+id/btnIniciarSesion"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Iniciar Sesión"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#0F6E56"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Demo: cualquier email válido + contraseña"
+            android:textColor="#5B6F69"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="© 2025 MedEled. Todos los derechos reservados."
+        android:textColor="#5B6F69"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

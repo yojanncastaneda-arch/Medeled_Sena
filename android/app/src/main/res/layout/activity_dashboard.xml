@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E1F5EE">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- ENCABEZADO -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="medEled"
+            android:textColor="#14463A"
+            android:textSize="28sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ILUMINACIÓN ECOLÓGICA"
+            android:textColor="#5B6F69"
+            android:textSize="12sp"
+            android:layout_marginBottom="28dp"/>
+
+
+        <!-- TÍTULO -->
+
+        <TextView
+            android:id="@+id/tituloDashboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Panel de gestión"
+            android:textColor="#14463A"
+            android:textSize="26sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Resumen general de MEDELED"
+            android:textColor="#5B6F69"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp"/>
+
+
+        <!-- CLIENTES -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="18dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CLIENTES"
+                android:textColor="#5B6F69"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/txtClientes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="128"
+                android:textColor="#0F6E56"
+                android:textSize="28sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+
+        <!-- PROYECTOS -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="18dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PROYECTOS SOLARES"
+                android:textColor="#5B6F69"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/txtProyectos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="42"
+                android:textColor="#0F6E56"
+                android:textSize="28sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+
+        <!-- VENTAS -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="18dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="VENTAS"
+                android:textColor="#5B6F69"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/txtVentas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="$85M"
+                android:textColor="#00A5BA"
+                android:textSize="28sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+
+        <!-- MÓDULOS -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Módulos"
+            android:textColor="#14463A"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
+
+
+        <Button
+            android:id="@+id/btnClientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CLIENTES"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#0F6E56"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:id="@+id/btnProyectos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PROYECTOS SOLARES"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#14463A"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:id="@+id/btnVentas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VENTAS"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#00BCD4"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:id="@+id/btnReportes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="REPORTES"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#0F6E56"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:id="@+id/btnAlertas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ALERTAS"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#B45309"
+            android:layout_marginBottom="24dp"/>
+
+
+        <!-- PIE -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Energía limpia • Iluminación solar • Sostenibilidad"
+            android:textColor="#5B6F69"
+            android:textSize="12sp"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+</ScrollView>
