@@ -1,0 +1,8 @@
+target/
+*.class
+.netbeans/
+nb-configuration.xml
+
+# Claves locales (nunca subirlas)
+.env
+datos.txt
