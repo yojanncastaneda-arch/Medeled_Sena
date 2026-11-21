@@ -1,0 +1,13 @@
+{
+  "name": "medeled-tests",
+  "version": "1.0.0",
+  "description": "Plan de pruebas GA9-220501096-AA1-EV02 – Sistema de Información MEDELED",
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright test --reporter=html && playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "dotenv": "^16.4.5"
+  }
+}

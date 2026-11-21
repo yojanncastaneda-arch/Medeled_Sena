@@ -1,0 +1,28 @@
+DATOS DE PRUEBA – PP-MEDELED-001
+=================================
+
+Autenticación
+  Usuario de prueba : tester01
+  Contraseña válida : Prueba123
+  Contraseña débil  : abc (< 8 chars, sin número)
+  Usuario duplicado : registrar tester01 dos veces
+
+Clientes
+  Nombre   : Carlos Pérez
+  Producto : Panel solar 550W
+  Fecha    : 2026-09-01   (pasada o hoy)
+  Estado   : pendiente | en_proceso | resuelto
+  Estado inválido: cerrado
+
+Ventas
+  idCliente     : id de un cliente existente en BD de prueba
+  Producto      : Panel solar 450W
+  Cantidad      : 4
+  Precio unit.  : 850000.00
+  Fecha venta   : 2026-09-16
+  Estado        : pendiente | pagada | anulada
+  idCliente inex: 999999
+
+Módulos pendientes (sin implementar)
+  HU-007 a HU-020: visitas, tickets, órdenes, PQRS,
+                   inventario, notificaciones, cronograma.
